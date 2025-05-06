@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useCart } from "../context/CartContext";
+
+type Product = {
+  _id: string;
+  name: string;
+  price: number;
+};
 
 type ProductInCart = {
-  product: {
-    _id: string;
-    name: string;
-    price: number;
-  };
+  product: Product;
   quantity: number;
 };
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<ProductInCart[]>([]);
+  const { cart, dispatch } = useCart();
   const [total, setTotal] = useState(0);
 
   const fetchCart = async () => {
@@ -22,33 +25,25 @@ export default function Cart() {
         },
       });
 
-      setCartItems(res.data.products);
+      dispatch({ type: "CLEAR_CART" });
 
-      const totalSum = res.data.products.reduce(
-        (sum: number, item: ProductInCart) =>
-          sum + item.product.price * item.quantity,
-        0
-      );
-
-      setTotal(totalSum);
+      res.data.products.forEach((item: ProductInCart) => {
+        dispatch({
+          type: "ADD_ITEM",
+          payload: {
+            id: item.product._id,
+            name: item.product.name,
+            price: item.product.price,
+            quantity: item.quantity,
+          },
+        });
+      });
     } catch (err) {
       console.error("Failed to fetch cart", err);
     }
   };
 
-  useEffect(() => {
-    fetchCart();
-  }, []);
-
-  const handleQuantityChange = (productId: string, quantity: number) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.product._id === productId ? { ...item, quantity } : item
-      )
-    );
-  };
-
-  const handleUpdate = async (productId: string, quantity: number) => {
+  const handleQuantityChange = async (productId: string, quantity: number) => {
     try {
       await axios.put(
         `http://localhost:5000/api/cart/${productId}`,
@@ -59,23 +54,30 @@ export default function Cart() {
           },
         }
       );
-      fetchCart();
+
+      dispatch({
+        type: "CHANGE_QUANTITY",
+        payload: {
+          id: productId,
+          quantity,
+        },
+      });
     } catch (err) {
-      console.error("Failed to update cart item", err);
+      console.error("Failed to update item quantity on server", err);
     }
   };
 
-  const handleDelete = async (productId: string) => {
+  const handleRemove = async (productId: string) => {
     try {
       await axios.delete(`http://localhost:5000/api/cart/${productId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      await fetchCart();
+
+      dispatch({ type: "REMOVE_ITEM", payload: productId });
     } catch (err) {
-      console.error("Failed to remove item from cart", err);
-      alert("Failed to remove item");
+      console.error("Failed to remove item from server", err);
     }
   };
 
@@ -91,38 +93,42 @@ export default function Cart() {
         }
       );
       alert("Order placed successfully!");
-      setCartItems([]);
-      setTotal(0);
+      dispatch({ type: "CLEAR_CART" });
     } catch (err) {
       console.error("Failed to place order", err);
       alert("Failed to place order.");
     }
   };
 
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  useEffect(() => {
+    const totalSum = cart.reduce((sum, item) => {
+      return sum + item.price * item.quantity;
+    }, 0);
+    setTotal(totalSum);
+  }, [cart]);
+
   return (
     <div>
       <h1>Your Cart</h1>
-      {cartItems.map(({ product, quantity }) => (
-        <div key={product._id}>
+      {cart.map(({ id, name, price, quantity }) => (
+        <div key={id}>
           <p>
-            <strong>{product.name}</strong> – {quantity} x €{product.price}
+            <strong>{name}</strong> × {quantity} = €{price}
           </p>
           <input
             type="number"
             value={quantity}
-            min="1"
-            onChange={(e) =>
-              handleQuantityChange(product._id, parseInt(e.target.value))
-            }
+            onChange={(e) => handleQuantityChange(id, Number(e.target.value))}
           />
-          <button onClick={() => handleUpdate(product._id, quantity)}>
-            Update
-          </button>
-          <button onClick={() => handleDelete(product._id)}>Delete</button>
+          <button onClick={() => handleRemove(id)}>Remove</button>
         </div>
       ))}
-      <hr />
-      <h3>Total: €{total.toFixed(2)}</h3>
+
+      <h2>Total: €{total.toFixed(2)}</h2>
       <button onClick={handlePlaceOrder}>Place Order</button>
     </div>
   );

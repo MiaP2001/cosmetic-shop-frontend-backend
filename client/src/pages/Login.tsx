@@ -1,9 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { dispatch } = useUser();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -25,6 +27,16 @@ const Login = () => {
       );
       const token = res.data.token;
       localStorage.setItem("token", token);
+      dispatch({
+        type: "LOGIN",
+        payload: {
+          id: res.data.user._id,
+          name: res.data.user.name,
+          email: res.data.user.email,
+          role: res.data.user.role,
+        },
+      });
+
       navigate("/");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
