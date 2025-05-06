@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import ProductList from "./components/ProductList";
@@ -17,7 +17,11 @@ function App() {
             <p>
               Welcome, {user.name} ({user.role})
             </p>
-            {user.role === "admin" && <button>Admin Panel</button>}
+            {user.role === "admin" && (
+              <Link to="/admin">
+                <button>Admin Panel</button>
+              </Link>
+            )}
             <button onClick={logout}>Logout</button>
           </>
         ) : (
