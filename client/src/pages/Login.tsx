@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 
@@ -20,13 +21,21 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/users/login",
-        formData
-      );
+      const res = await axios.post<{
+        token: string;
+        user: {
+          _id: string;
+          name: string;
+          email: string;
+          role: "user" | "admin";
+        };
+      }>("http://localhost:5000/api/users/login", formData);
+
       const token = res.data.token;
       localStorage.setItem("token", token);
+
       dispatch({
         type: "LOGIN",
         payload: {
@@ -38,9 +47,11 @@ const Login = () => {
       });
 
       navigate("/");
-    } catch (err: unknown) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Login failed");
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+
+      if (error.response?.data?.message) {
+        setError(error.response.data.message);
       } else {
         setError("Something went wrong");
       }

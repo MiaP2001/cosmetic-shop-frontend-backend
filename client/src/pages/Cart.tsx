@@ -19,11 +19,14 @@ export default function Cart() {
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/cart", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const res = await axios.get<{ products: ProductInCart[] }>(
+        "http://localhost:5000/api/cart",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       dispatch({ type: "CLEAR_CART" });
 
