@@ -92,6 +92,7 @@ export const updateProduct = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  console.log("UPDATE BODY:", req.body);
   try {
     const { id } = req.params;
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
