@@ -5,6 +5,7 @@ import ProductList from "./components/ProductList";
 import { useAuth } from "../src/hooks/useAuth";
 import AdminPage from "./pages/AdminPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Cart from "./pages/Cart";
 
 function App() {
   const { user, logout } = useAuth();
@@ -29,6 +30,9 @@ function App() {
             <a href="/login">Login</a> | <a href="/register">Register</a>
           </>
         )}
+        {user?.role === "user" && (
+          <button onClick={() => (window.location.href = "/cart")}>Cart</button>
+        )}
       </div>
 
       <Routes>
@@ -43,6 +47,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </BrowserRouter>
   );
