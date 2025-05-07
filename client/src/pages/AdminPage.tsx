@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductForm from "../components/ProductForm";
 import type { Product } from "../types";
+import styles from "../styles/AdminPanel.module.scss";
 
 const AdminPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -85,15 +86,25 @@ const AdminPage = () => {
   };
 
   return (
-    <div>
+    <div className={styles.adminPanel}>
       <h1>Admin Panel - Products</h1>
+
       <button
         onClick={() => {
           setShowForm((prev) => !prev);
           setEditingProduct(null);
         }}
+        className={styles.addBtn}
       >
-        {showForm ? "Close" : "➕ Add New Product"}
+        <span>
+          {showForm ? (
+            "✖ Close"
+          ) : (
+            <>
+              <span>➕</span> Add New Product
+            </>
+          )}
+        </span>
       </button>
 
       {showForm && (
@@ -102,20 +113,38 @@ const AdminPage = () => {
           initialData={editingProduct}
         />
       )}
-      <ul>
+
+      <ul className={styles.productList}>
         {products.map((product) => (
-          <li key={product._id}>
-            <strong>{product.name}</strong> – €{product.price}
-            <div>
+          <li key={product._id} className={styles.productItem}>
+            <div className={styles.productInfo}>
+              {product.imageUrl && (
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className={styles.productImage}
+                />
+              )}
+              <div>
+                <strong>{product.name}</strong> – €{product.price}
+              </div>
+            </div>
+
+            <div className={styles.actions}>
               <button
                 onClick={() => {
                   setEditingProduct(product);
                   setShowForm(true);
                 }}
+                className={styles.editBtn}
               >
-                Edit
+                ✏ Edit
               </button>
-              <button onClick={() => product._id && handleDelete(product._id)}>
+
+              <button
+                onClick={() => product._id && handleDelete(product._id)}
+                className={styles.deleteBtn}
+              >
                 🗑 Delete
               </button>
             </div>

@@ -6,34 +6,55 @@ import { useAuth } from "../src/hooks/useAuth";
 import AdminPage from "./pages/AdminPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Cart from "./pages/Cart";
+import styles from "./styles/Header.module.scss";
 
 function App() {
   const { user, logout } = useAuth();
 
   return (
     <BrowserRouter>
-      <div style={{ padding: "1rem", borderBottom: "1px solid gray" }}>
-        {user ? (
-          <>
-            <p>
-              Welcome, {user.name} ({user.role})
-            </p>
-            {user.role === "admin" && (
-              <Link to="/admin">
-                <button>Admin Panel</button>
+      <header className={styles.header}>
+        <div className={styles.logo}>Cosmetic Shop</div>
+
+        <nav className={styles.nav}>
+          {user ? (
+            <>
+              <p className={styles.welcome}>
+                Welcome, <span className={styles.user}>{user.name}</span> (
+                {user.role})
+              </p>
+
+              {user.role === "admin" && (
+                <Link to="/admin">
+                  <button className={styles.navBtn}>Admin Panel</button>
+                </Link>
+              )}
+
+              <button onClick={logout} className={styles.navBtn}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className={styles.link}>
+                Login
               </Link>
-            )}
-            <button onClick={logout}>Logout</button>
-          </>
-        ) : (
-          <>
-            <a href="/login">Login</a> | <a href="/register">Register</a>
-          </>
-        )}
-        {user?.role === "user" && (
-          <button onClick={() => (window.location.href = "/cart")}>Cart</button>
-        )}
-      </div>
+              <Link to="/register" className={styles.link}>
+                Register
+              </Link>
+            </>
+          )}
+
+          {user?.role === "user" && (
+            <button
+              onClick={() => (window.location.href = "/cart")}
+              className={styles.navBtn}
+            >
+              Cart
+            </button>
+          )}
+        </nav>
+      </header>
 
       <Routes>
         <Route path="/" element={<ProductList />} />

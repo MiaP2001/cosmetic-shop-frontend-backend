@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../api/productApi";
 import axios from "axios";
+import styles from "../styles/ProductList.module.scss";
 
 type Product = {
   _id: string;
@@ -47,19 +48,25 @@ const ProductList = () => {
   return (
     <div>
       <h2>All Products</h2>
-      <ul>
+      <ul className={styles.productList}>
         {products.map((product) => (
-          <li key={product._id}>
+          <li key={product._id} className={styles.card}>
             {product.imageUrl && (
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                style={{ width: "150px", height: "150px", objectFit: "cover" }}
-              />
+              <div className={styles.imageWrapper}>
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className={styles.productImage}
+                />
+              </div>
             )}
-            <strong>{product.name}</strong> – €{product.price}
-            <p>{product.description}</p>
-            <button onClick={() => handleAddToCart(product._id)}>
+            <h3 className={styles.productTitle}>{product.name}</h3>
+            <p className={styles.productPrice}>€{product.price}</p>
+            <p className={styles.productDescription}>{product.description}</p>
+            <button
+              className={styles.addButton}
+              onClick={() => handleAddToCart(product._id)}
+            >
               Add to Cart
             </button>
           </li>

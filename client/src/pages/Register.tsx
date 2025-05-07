@@ -3,6 +3,7 @@ import axios from "axios";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+import styles from "../styles/Register.module.scss";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -60,36 +61,42 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div className={styles.formContainer}>
       <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"
           name="name"
           placeholder="Name"
           onChange={handleChange}
           required
+          className={styles.input}
         />
-        <br />
+
         <input
           type="email"
           name="email"
           placeholder="Email"
           onChange={handleChange}
           required
+          className={styles.input}
         />
-        <br />
+
         <input
           type="password"
           name="password"
           placeholder="Password"
           onChange={handleChange}
           required
+          className={styles.input}
         />
-        <br />
-        <button type="submit">Register</button>
+
+        <button type="submit" className={styles.button}>
+          Register
+        </button>
+
+        {error && <p className={styles.error}>{error}</p>}
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };

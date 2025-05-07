@@ -1,0 +1,105 @@
+.productList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.productItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #faf6f1;
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.productInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.productImage {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+
+  @media (max-width: 600px) {
+    margin-top: 10px;
+  }
+}
+
+.editBtn {
+  background-color: #a1866f;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #917660;
+  }
+}
+
+.deleteBtn {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #c9302c;
+  }
+}
+
+.addBtn {
+  background-color: #7f5539;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #9c6644;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
