@@ -47,8 +47,8 @@ const ProductList = () => {
   };
 
   return (
-    <div>
-      <h2>All Products</h2>
+    <div className={styles.pageContainer}>
+      <h2 className={styles.pageTitle}>All Products</h2>
       <ul className={styles.productList}>
         {products.map((product) => (
           <li key={product._id} className={styles.card}>
