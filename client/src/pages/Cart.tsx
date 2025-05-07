@@ -1,17 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
-
-type Product = {
-  _id: string;
-  name: string;
-  price: number;
-};
-
-type ProductInCart = {
-  product: Product;
-  quantity: number;
-};
+import styles from "../styles/Cart.module.scss";
+import type { ProductInCart } from "../types/productTypes";
 
 export default function Cart() {
   const { cart, dispatch } = useCart();
@@ -38,6 +29,7 @@ export default function Cart() {
             name: item.product.name,
             price: item.product.price,
             quantity: item.quantity,
+            imageUrl: item.product.imageUrl,
           },
         });
       });
@@ -117,22 +109,34 @@ export default function Cart() {
   return (
     <div>
       <h1>Your Cart</h1>
-      {cart.map(({ id, name, price, quantity }) => (
-        <div key={id}>
-          <p>
-            <strong>{name}</strong> × {quantity} = €{price}
-          </p>
-          <input
-            type="number"
-            value={quantity}
-            onChange={(e) => handleQuantityChange(id, Number(e.target.value))}
-          />
-          <button onClick={() => handleRemove(id)}>Remove</button>
+      {cart.map(({ id, name, price, quantity, imageUrl }) => (
+        <div key={id} className={styles.cartItem}>
+          <img src={imageUrl} alt={name} className={styles.image} />
+          <div className={styles.details}>
+            <p>
+              <strong>{name}</strong>
+            </p>
+            <p>
+              {quantity} × €{price} = €{(quantity * price).toFixed(2)}
+            </p>
+            <input
+              type="number"
+              value={quantity}
+              onChange={(e) => handleQuantityChange(id, Number(e.target.value))}
+            />
+            <button
+              className={styles.removeButton}
+              onClick={() => handleRemove(id)}
+            >
+              Remove
+            </button>{" "}
+          </div>
         </div>
       ))}
-
       <h2>Total: €{total.toFixed(2)}</h2>
-      <button onClick={handlePlaceOrder}>Place Order</button>
+      <button className={styles.cartButton} onClick={handlePlaceOrder}>
+        Place Order
+      </button>{" "}
     </div>
   );
 }
