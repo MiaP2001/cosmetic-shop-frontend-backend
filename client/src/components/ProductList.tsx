@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { fetchProducts } from "../api/productApi";
 import axios from "axios";
 import styles from "../styles/ProductList.module.scss";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type Product = {
   _id: string;
@@ -37,11 +39,10 @@ const ProductList = () => {
           },
         }
       );
-
-      alert("Added to cart!");
+      toast.success("Product added to cart!");
     } catch (err) {
       console.error("Failed to add to cart", err);
-      alert("Failed to add to cart");
+      toast.error("Something went wrong");
     }
   };
 
@@ -51,18 +52,21 @@ const ProductList = () => {
       <ul className={styles.productList}>
         {products.map((product) => (
           <li key={product._id} className={styles.card}>
-            {product.imageUrl && (
-              <div className={styles.imageWrapper}>
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className={styles.productImage}
-                />
-              </div>
-            )}
-            <h3 className={styles.productTitle}>{product.name}</h3>
-            <p className={styles.productPrice}>€{product.price}</p>
-            <p className={styles.productDescription}>{product.description}</p>
+            <Link to={`/products/${product._id}`} className={styles.link}>
+              {product.imageUrl && (
+                <div className={styles.imageWrapper}>
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    className={styles.productImage}
+                  />
+                </div>
+              )}
+              <h3 className={styles.productTitle}>{product.name}</h3>
+              <p className={styles.productPrice}>€{product.price}</p>
+              <p className={styles.productDescription}>{product.description}</p>
+            </Link>
+
             <button
               className={styles.addButton}
               onClick={() => handleAddToCart(product._id)}

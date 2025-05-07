@@ -7,6 +7,10 @@ import AdminPage from "./pages/AdminPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Cart from "./pages/Cart";
 import styles from "./styles/Header.module.scss";
+import ProductPage from "./pages/ProductPage";
+import { ToastContainer } from "react-toastify";
+import { CartProvider } from "./context/CartContext";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { user, logout } = useAuth();
@@ -17,6 +21,9 @@ function App() {
         <div className={styles.logo}>Cosmetic Shop</div>
 
         <nav className={styles.nav}>
+          <Link to="/" className={styles.navBtn}>
+            All Products
+          </Link>
           {user ? (
             <>
               <p className={styles.welcome}>
@@ -56,20 +63,24 @@ function App() {
         </nav>
       </header>
 
-      <Routes>
-        <Route path="/" element={<ProductList />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/cart" element={<Cart />} />
-      </Routes>
+      <CartProvider>
+        <Routes>
+          <Route path="/" element={<ProductList />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/products/:id" element={<ProductPage />} />
+        </Routes>
+      </CartProvider>
+      <ToastContainer />
     </BrowserRouter>
   );
 }
