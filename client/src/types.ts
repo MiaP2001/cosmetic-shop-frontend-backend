@@ -1,3 +1,5 @@
+import type { Category } from "./types/Category";
+
 export type Product = {
   _id?: string;
   name: string;
@@ -6,5 +8,5 @@ export type Product = {
   imageUrl?: string;
   instruction?: string;
   brand?: string;
-  category?: string;
+  category: string | Category;
 };

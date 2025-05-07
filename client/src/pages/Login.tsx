@@ -3,6 +3,7 @@ import axios from "axios";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+import styles from "../styles/Login.module.scss";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -59,28 +60,33 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className={styles.formContainer}>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="email"
           name="email"
           placeholder="Email"
           onChange={handleChange}
           required
+          className={styles.input}
         />
-        <br />
+
         <input
           type="password"
           name="password"
           placeholder="Password"
           onChange={handleChange}
           required
+          className={styles.input}
         />
-        <br />
-        <button type="submit">Login</button>
+
+        <button type="submit" className={styles.button}>
+          Login
+        </button>
+
+        {error && <p className={styles.error}>{error}</p>}
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };
