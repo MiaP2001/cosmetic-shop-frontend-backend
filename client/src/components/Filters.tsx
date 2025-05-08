@@ -23,41 +23,43 @@ const Filters: React.FC<FiltersProps> = ({
   setSearchTerm,
 }) => {
   return (
-    <div className={styles.filters}>
-      <input
-        type="text"
-        placeholder="Search by name..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className={styles.input}
-      />
+    <div className={styles.pageContainer}>
+      <div className={styles.filters}>
+        <input
+          type="text"
+          placeholder="Search by name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className={styles.input}
+        />
 
-      <select
-        value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}
-        className={styles.select}
-      >
-        <option value="">All Categories</option>
-        <option value="681a0e64e9870ffa618f8b80">Kūnui</option>
-        <option value="681a0e8fe9870ffa618f8b83">Veidui</option>
-        <option value="681a0ea3e9870ffa618f8b86">Plaukams</option>
-      </select>
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className={styles.select}
+        >
+          <option value="">All Categories</option>
+          <option value="681a0e64e9870ffa618f8b80">Kūnui</option>
+          <option value="681a0e8fe9870ffa618f8b83">Veidui</option>
+          <option value="681a0ea3e9870ffa618f8b86">Plaukams</option>
+        </select>
 
-      <input
-        type="number"
-        placeholder="Min price"
-        value={minPrice}
-        onChange={(e) => setMinPrice(e.target.value)}
-        className={styles.input}
-      />
+        <input
+          type="number"
+          placeholder="Min price"
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
+          className={styles.input}
+        />
 
-      <input
-        type="number"
-        placeholder="Max price"
-        value={maxPrice}
-        onChange={(e) => setMaxPrice(e.target.value)}
-        className={styles.input}
-      />
+        <input
+          type="number"
+          placeholder="Max price"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
+          className={styles.input}
+        />
+      </div>
     </div>
   );
 };
