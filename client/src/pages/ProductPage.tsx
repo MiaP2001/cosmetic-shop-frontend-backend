@@ -34,7 +34,9 @@ const ProductPage = () => {
         }
       );
 
-      toast.success("Product added to cart!");
+      toast.success("Product added to cart!", {
+        autoClose: 100,
+      });
     } catch (err) {
       console.error("Failed to add to cart", err);
       toast.error("Something went wrong");

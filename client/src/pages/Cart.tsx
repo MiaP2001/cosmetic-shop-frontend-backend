@@ -22,6 +22,7 @@ export default function Cart() {
       dispatch({ type: "CLEAR_CART" });
 
       res.data.products.forEach((item: ProductInCart) => {
+        if (!item.product || !item.product._id) return;
         dispatch({
           type: "ADD_ITEM",
           payload: {

@@ -58,3 +58,27 @@
 .removeButton:hover {
   background-color: #cc3333;
 }
+
+@media (max-width: 768px) {
+  .cartItem {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .image {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+  }
+
+  h2 {
+    justify-self: center;
+  }
+
+  .cartButton {
+    display: block;
+    margin: 12px auto 0;
+  }
+}
