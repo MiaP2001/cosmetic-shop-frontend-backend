@@ -32,6 +32,7 @@
 }
 
 .navBtn {
+  display: block;
   background: none;
   border: 1px solid #7c5e4a;
   color: #7c5e4a;
@@ -55,4 +56,79 @@
 .user {
   font-weight: 600;
   color: #5b4435;
+}
+
+.burger {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .burger {
+    display: block;
+    font-size: 28px;
+    background: none;
+    border: none;
+    color: #5b4435;
+    cursor: pointer;
+    margin-right: 12px;
+  }
+
+  .nav {
+    position: absolute;
+    top: 72px;
+    right: 16px;
+    width: 260px;
+    background-color: #f9f6f1;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    z-index: 999;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .nav.active {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .navBtn {
+    width: 100%;
+    text-align: center;
+    padding: 10px 16px;
+    background: none;
+    border: 1px solid #7c5e4a;
+    border-radius: 8px;
+    color: #5b4435;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .navBtn:hover {
+    background-color: #7c5e4a;
+    color: white;
+  }
+
+  .welcome {
+    font-size: 14px;
+    color: #5b4435;
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .loginBtn {
+    background-color: #a87b54;
+    color: white;
+  }
+  .registerBtn {
+    background-color: #e94e4e;
+    color: white;
+  }
 }

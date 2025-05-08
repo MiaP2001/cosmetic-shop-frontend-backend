@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductForm from "../components/ProductForm";
-import type { Product } from "../types";
+import type { Product } from "../types/productTypes";
 import styles from "../styles/AdminPanel.module.scss";
+import Filters from "../components/Filters";
 
 const AdminPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -89,23 +95,16 @@ const AdminPage = () => {
     <div className={styles.adminPanel}>
       <h1>Admin Panel - Products</h1>
 
-      <button
-        onClick={() => {
-          setShowForm((prev) => !prev);
-          setEditingProduct(null);
-        }}
-        className={styles.addBtn}
-      >
-        <span>
-          {showForm ? (
-            "✖ Close"
-          ) : (
-            <>
-              <span>➕</span> Add New Product
-            </>
-          )}
-        </span>
-      </button>
+      <Filters
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        minPrice={minPrice}
+        setMinPrice={setMinPrice}
+        maxPrice={maxPrice}
+        setMaxPrice={setMaxPrice}
+      />
 
       {showForm && (
         <ProductForm
@@ -113,44 +112,92 @@ const AdminPage = () => {
           initialData={editingProduct}
         />
       )}
+      <div className={styles.productsContainer}>
+        <button
+          onClick={() => {
+            setShowForm((prev) => !prev);
+            setEditingProduct(null);
+          }}
+          className={styles.addBtn}
+        >
+          <span>
+            {showForm ? (
+              "✖ Close"
+            ) : (
+              <>
+                <span>➕</span> Add New Product
+              </>
+            )}
+          </span>
+        </button>
 
-      <ul className={styles.productList}>
-        {products.map((product) => (
-          <li key={product._id} className={styles.productItem}>
-            <div className={styles.productInfo}>
-              {product.imageUrl && (
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className={styles.productImage}
-                />
-              )}
-              <div>
-                <strong>{product.name}</strong> – €{product.price}
-              </div>
-            </div>
+        <ul className={styles.productList}>
+          {products
+            .filter((product) => {
+              const categoryId =
+                typeof product.category === "string"
+                  ? product.category
+                  : product.category?._id;
 
-            <div className={styles.actions}>
-              <button
-                onClick={() => {
-                  setEditingProduct(product);
-                  setShowForm(true);
-                }}
-                className={styles.editBtn}
-              >
-                ✏ Edit
-              </button>
+              const matchCategory = selectedCategory
+                ? categoryId === selectedCategory
+                : true;
 
-              <button
-                onClick={() => product._id && handleDelete(product._id)}
-                className={styles.deleteBtn}
-              >
-                🗑 Delete
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+              const matchMin = minPrice
+                ? product.price >= Number(minPrice)
+                : true;
+              const matchMax = maxPrice
+                ? product.price <= Number(maxPrice)
+                : true;
+              const matchSearch = product.name
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase());
+
+              return matchCategory && matchMin && matchMax && matchSearch;
+            })
+            .map((product) => (
+              <li key={product._id} className={styles.productItem}>
+                {product.imageUrl && (
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    className={styles.productImage}
+                  />
+                )}
+
+                <div className={styles.productContent}>
+                  <div className={styles.productText}>
+                    <div className={styles.productDetails}>
+                      <strong>{product.name}</strong>
+                      <p className={styles.price}>€{product.price}</p>
+                    </div>
+                    <div className={styles.description}>
+                      {product.description}
+                    </div>{" "}
+                  </div>
+                </div>
+
+                <div className={styles.actions}>
+                  <button
+                    onClick={() => {
+                      setEditingProduct(product);
+                      setShowForm(true);
+                    }}
+                    className={styles.editBtn}
+                  >
+                    ✎ Edit
+                  </button>
+                  <button
+                    onClick={() => product._id && handleDelete(product._id)}
+                    className={styles.deleteBtn}
+                  >
+                    🗑 Delete
+                  </button>
+                </div>
+              </li>
+            ))}
+        </ul>
+      </div>
     </div>
   );
 };
