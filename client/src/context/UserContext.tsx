@@ -23,13 +23,13 @@ function userReducer(state: User, action: Action): User {
   }
 }
 
-const UserContext = createContext<{
-  user: User;
-  dispatch: React.Dispatch<Action>;
-}>({
-  user: initialState,
-  dispatch: () => {},
-});
+const UserContext = createContext<
+  | {
+      user: User;
+      dispatch: React.Dispatch<Action>;
+    }
+  | undefined
+>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, dispatch] = useReducer(userReducer, initialState);
@@ -41,4 +41,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUser must be used within a UserProvider");
+  }
+  return context;
+};

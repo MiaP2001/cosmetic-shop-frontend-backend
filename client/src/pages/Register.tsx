@@ -33,7 +33,7 @@ const Register = () => {
           email: string;
           role: "user" | "admin";
         };
-      }>("http://localhost:5000/api/users/login", formData);
+      }>("http://localhost:5000/api/users/register", formData);
 
       const token = res.data.token;
       localStorage.setItem("token", token);

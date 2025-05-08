@@ -4,17 +4,23 @@ import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import styles from "../styles/Login.module.scss";
+import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { dispatch } = useUser();
-
+  const { user, dispatch } = useUser();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (user?.role) {
+      navigate("/", { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,38 +30,35 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post<{
-        token: string;
-        user: {
-          _id: string;
-          name: string;
-          email: string;
-          role: "user" | "admin";
-        };
-      }>("http://localhost:5000/api/users/login", formData);
+      const res = await axios.post(
+        "http://localhost:5000/api/users/login",
+        formData
+      );
 
       const token = res.data.token;
       localStorage.setItem("token", token);
 
-      dispatch({
-        type: "LOGIN",
-        payload: {
-          id: res.data.user._id,
-          name: res.data.user.name,
-          email: res.data.user.email,
-          role: res.data.user.role,
-        },
-      });
+      const userData = res.data.user;
 
-      navigate("/");
-    } catch (err) {
-      const error = err as AxiosError<{ message: string }>;
-
-      if (error.response?.data?.message) {
-        setError(error.response.data.message);
+      if (userData) {
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            id: res.data.user._id,
+            name: res.data.user.name,
+            email: res.data.user.email,
+            role: res.data.user.role,
+          },
+        });
+        window.location.href = "/";
       } else {
-        setError("Something went wrong");
+        setError("Login failed: user data missing");
       }
+    } catch (err) {
+      const errorMessage =
+        (err as AxiosError<{ message: string }>)?.response?.data?.message ||
+        "Something went wrong";
+      setError(errorMessage);
     }
   };
 

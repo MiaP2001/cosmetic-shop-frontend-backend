@@ -21,12 +21,18 @@ export const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     if (token) {
-      const decoded = jwtDecode<User>(token);
-      setUser(decoded);
+      try {
+        const decoded = jwtDecode<User>(token);
+        setUser(decoded);
+      } catch (err) {
+        console.error("Invalid token:", err);
+        localStorage.removeItem("token");
+        setUser(null);
+      }
     }
   }, []);
 
