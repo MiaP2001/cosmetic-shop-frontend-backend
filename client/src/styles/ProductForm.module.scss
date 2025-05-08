@@ -8,17 +8,24 @@
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   width: 100%;
-  max-width: 600px;
+  max-width: 1000px;
+  margin: 80px auto;
 }
 
 .input,
 .textarea {
-  padding: 10px;
-  font-size: 15px;
+  padding: 14px;
+  font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: #fff;
   transition: border 0.2s;
+}
+
+textarea {
+  resize: none; /* отключает ручное изменение */
+  overflow: hidden;
+  min-height: 80px;
 }
 
 .input:focus,

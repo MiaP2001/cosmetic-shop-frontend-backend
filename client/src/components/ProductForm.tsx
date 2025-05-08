@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { Product } from "../types";
+import type { Product } from "../types/productTypes";
 import styles from "../styles/ProductForm.module.scss";
 import { getCategories } from "../api/categoryApi";
 
@@ -10,7 +10,7 @@ type ProductFormProps = {
 
 const ProductForm = ({ onSubmit, initialData }: ProductFormProps) => {
   const [name, setName] = useState(initialData?.name || "");
-  const [price, setPrice] = useState(initialData?.price || 0);
+  const [price, setPrice] = useState(initialData?.price?.toString() || "");
   const [description, setDescription] = useState(
     initialData?.description || ""
   );
@@ -37,17 +37,17 @@ const ProductForm = ({ onSubmit, initialData }: ProductFormProps) => {
     e.preventDefault();
     onSubmit({
       name,
-      price,
+      price: Number(price),
       description,
       imageUrl,
       instruction,
       category,
       brand,
-      _id: initialData?._id,
+      _id: initialData?._id || "",
     });
 
     setName("");
-    setPrice(0);
+    setPrice("");
     setDescription("");
     setImageUrl("");
   };
@@ -67,7 +67,7 @@ const ProductForm = ({ onSubmit, initialData }: ProductFormProps) => {
         type="number"
         placeholder="Price"
         value={price}
-        onChange={(e) => setPrice(Number(e.target.value))}
+        onChange={(e) => setPrice(e.target.value)}
         required
         className={styles.input}
       />
