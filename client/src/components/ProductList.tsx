@@ -4,17 +4,16 @@ import axios from "axios";
 import styles from "../styles/ProductList.module.scss";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
-type Product = {
-  _id: string;
-  name: string;
-  price: number;
-  description: string;
-  imageUrl?: string;
-};
+import Filters from "./Filters";
+import type { Product } from "../types/productTypes";
 
 const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -24,6 +23,24 @@ const ProductList = () => {
 
     loadProducts();
   }, []);
+
+  const filteredProducts = products.filter((product) => {
+    const categoryId =
+      typeof product.category === "string"
+        ? product.category
+        : product.category?._id;
+
+    const matchCategory = selectedCategory
+      ? categoryId === selectedCategory
+      : true;
+
+    const matchMin = minPrice ? product.price >= Number(minPrice) : true;
+    const matchMax = maxPrice ? product.price <= Number(maxPrice) : true;
+    const matchSearch = product.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    return matchCategory && matchMin && matchMax && matchSearch;
+  });
 
   const handleAddToCart = async (productId: string) => {
     try {
@@ -49,8 +66,19 @@ const ProductList = () => {
   return (
     <div className={styles.pageContainer}>
       <h2 className={styles.pageTitle}>All Products</h2>
+
+      <Filters
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        minPrice={minPrice}
+        setMinPrice={setMinPrice}
+        maxPrice={maxPrice}
+        setMaxPrice={setMaxPrice}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
       <ul className={styles.productList}>
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <li key={product._id} className={styles.card}>
             <Link to={`/products/${product._id}`} className={styles.link}>
               {product.imageUrl && (

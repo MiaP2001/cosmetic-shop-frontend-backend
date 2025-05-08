@@ -11,19 +11,29 @@ import ProductPage from "./pages/ProductPage";
 import { ToastContainer } from "react-toastify";
 import { CartProvider } from "./context/CartContext";
 import "react-toastify/dist/ReactToastify.css";
+import { useState } from "react";
 
 function App() {
   const { user, logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <BrowserRouter>
       <header className={styles.header}>
         <div className={styles.logo}>Cosmetic Shop</div>
 
-        <nav className={styles.nav}>
-          <Link to="/" className={styles.navBtn}>
-            All Products
+        <button
+          className={styles.burger}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          ☰
+        </button>
+
+        <nav className={`${styles.nav} ${isMenuOpen ? styles.active : ""}`}>
+          <Link to="/">
+            <button className={styles.navBtn}>All Products</button>
           </Link>
+
           {user ? (
             <>
               <p className={styles.welcome}>
@@ -43,11 +53,11 @@ function App() {
             </>
           ) : (
             <>
-              <Link to="/login" className={styles.link}>
-                Login
+              <Link to="/login">
+                <button className={styles.navBtn}>Login</button>
               </Link>
-              <Link to="/register" className={styles.link}>
-                Register
+              <Link to="/register">
+                <button className={styles.navBtn}>Register</button>
               </Link>
             </>
           )}
